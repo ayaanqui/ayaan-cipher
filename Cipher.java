@@ -6,7 +6,8 @@ public class Cipher {
     private final String startChar = "$", spaceChar = "%";
     private final long aVal = 250, bVal = 658326;
     /*
-     * $ indicates the start of a character % indicates a space
+     * $ = start of a character
+     * % = space
      */
 
     public Cipher(String text) {
@@ -39,12 +40,12 @@ public class Cipher {
                 charVal = (long) encTxtArr[i].charAt(j); // get ASCII code for jth char in encTxt[j] and convert it to long
                 encTxt += startChar; // add start character
                 /*
-                 * f(x) = ϕ(x)^2 + σx plugging in any ASCII code in f(x) will return the
-                 * encrypted ASCII code give that the ϕ and σ are provided where ϕ and σ are any
-                 * arbitrary numbers (the larger the values of ϕ and σ are, the harder it is to
+                 * f(x) = a(x)^2 + bx plugging in any ASCII code in f(x) will return the
+                 * encrypted ASCII code give that the a and b are provided where a and b are any
+                 * arbitrary numbers (the larger the values of a and b are, the harder it is to
                  * break the encrypted code).
                  */
-                encTxt += (aVal * (long) (Math.pow(charVal, 2))) + (bVal * charVal); // f(x) = ϕ(x)^2 + σx
+                encTxt += (aVal * (long) (charVal * charVal)) + (bVal * charVal);
             }
             encTxtArr[i] = encTxt;
             encTxt = "";
@@ -62,7 +63,7 @@ public class Cipher {
             String[] wordArr = repTxt.split(" ");
 
             for (int j = 0; j < wordArr.length; j++) {
-                longToChar = (char) quadraticSolver(aVal, bVal, Integer.parseInt(wordArr[j])); // F(x) = (-σ + sqrt((σ)^2 - 4ϕ(-x))) / (2ϕ)
+                longToChar = (char) quadraticSolver(aVal, bVal, Integer.parseInt(wordArr[j]));
                 decTxt += longToChar;
             }
             decTxtArr[i] = decTxt;
@@ -73,13 +74,13 @@ public class Cipher {
 
     public long quadraticSolver(long a, long b, long c) {
         /*
-         * F(x) = (-σ + sqrt((σ)^2 - 4ϕ(-x))) / (2ϕ) plugging in any encrypted ASCII
-         * code for x in F(x) will return the orginal ACII code given that ϕ and σ were
+         * F(x) = (-b + sqrt((b)^2 - 4a(-c))) / (2a) plugging in any encrypted ASCII
+         * code for x in F(x) will return the orginal ACII code given that a and b were
          * not changed during the encryption
          */
         long x = 0;
         c = -1 * c;
-        double top = (-1 * b) + Math.sqrt(Math.pow(b, 2) - (4 * (a * c)));
+        double top = (-1 * b) + Math.sqrt((b * b) - (4 * (a * c)));
         double bottom = 2 * a;
         x = (long) (top / bottom);
         return x;
